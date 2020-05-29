@@ -258,6 +258,11 @@ namespace MlActions {
 			});
 		}
 
+		// copy constructor
+		ActionListLink (const ActionListLink&) = delete;
+		// move constructor
+		ActionListLink (ActionListLink&&) = default;
+
 		~ActionListLink () {
 			list.clearFutureListener.remove(clearFutureListenerID);
 			list.clearListener.remove(clearListenerID);
