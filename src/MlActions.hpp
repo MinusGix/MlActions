@@ -132,6 +132,8 @@ namespace MlActions {
 
 		/// Called after future is cleared
 		EventListener<void()> clearFutureListener;
+		/// Called after everything is cleared
+		EventListener<void()> clearListener;
 		/// Called before action is added (or 're'done)
 		EventListener<void(std::unique_ptr<Action>&)> addListener;
 
@@ -148,6 +150,13 @@ namespace MlActions {
 			clearFuture();
 			actions.push_back(std::move(action));
 			redo();
+		}
+
+		/// Throw away everything
+		void clear () {
+			actions.clear();
+			position = 0;
+			clearListener();
 		}
 
 		/// Throws away everything after current position
@@ -237,11 +246,21 @@ namespace MlActions {
 		size_t position = 0;
 
 		size_t clearFutureListenerID;
+		size_t clearListenerID;
 		explicit ActionListLink (ActionList& t_list) : list(t_list) {
 			clearFutureListenerID = list.clearFutureListener.add([this] () {
 				this->sync();
 				this->clearFuture();
 			});
+			clearListenerID = list.clearListener.add([this] () {
+				this->data.clear();
+				this->position = 0;
+			});
+		}
+
+		~ActionListLink () {
+			list.clearFutureListener.remove(clearFutureListenerID);
+			list.clearListener.remove(clearListenerID);
 		}
 
 		void addAction (std::unique_ptr<BaseType>&& value) {
