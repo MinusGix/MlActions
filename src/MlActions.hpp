@@ -272,5 +272,26 @@ namespace MlActions {
 				}
 			}
 		}
+
+		template<typename F>
+		void visit (F&& func) {
+			for (auto& value : data) {
+				func(value);
+			}
+		}
+
+		template<typename F>
+		void visitPast (F&& func) {
+			for (size_t i = 0; i < position; i++) {
+				func(data.at(i));
+			}
+		}
+
+		template<typename F>
+		void visitFuture (F&& func) {
+			for (size_t i = position; i < data.size(); i++) {
+				func(data.at(i));
+			}
+		}
 	};
 };
