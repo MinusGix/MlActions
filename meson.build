@@ -17,14 +17,7 @@ endif
 if meson.get_compiler('c').get_id() == 'clang'
     message('Using Clang compiler for C, enabling all warnings')
     add_global_arguments('-Weverything', language : 'c')
-endif
+endif]
 
-srcs = [
-    'src/MlActions.cpp'
-]
-
-test_executable = executable('tests', sources : [
-    'src/MlActions.cpp',
-    'src/test.cpp'
-])
+test_executable = executable('tests', sources : ['src/test.cpp'])
 test('tests', test_executable)
